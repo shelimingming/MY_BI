@@ -1,0 +1,11 @@
+# shadcn/ui 组件目录
+
+使用 shadcn/ui CLI 添加的组件将自动放置在此目录下。
+
+添加组件示例：
+```bash
+npx shadcn@latest add button
+npx shadcn@latest add card
+npx shadcn@latest add dialog
+```
+
