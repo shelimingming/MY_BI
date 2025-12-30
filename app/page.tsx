@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { AuthButton } from "@/components/auth-button";
 
 /**
  * 首页组件
@@ -52,6 +53,11 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-black dark:to-zinc-900">
+      {/* 认证按钮 - 固定在右上角 */}
+      <div className="fixed right-4 top-4 z-10">
+        <AuthButton />
+      </div>
+
       <motion.main
         className="flex min-h-screen w-full max-w-4xl flex-col items-center justify-center gap-8 px-8 py-16"
         variants={containerVariants}
