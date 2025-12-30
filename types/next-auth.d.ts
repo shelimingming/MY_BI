@@ -8,6 +8,8 @@ declare module "next-auth" {
       email: string;
       name?: string | null;
       image?: string | null;
+      roles?: string[]; // 用户角色列表
+      permissions?: string[]; // 用户权限列表
     };
   }
 
@@ -16,6 +18,8 @@ declare module "next-auth" {
     email: string;
     name?: string | null;
     image?: string | null;
+    roles?: string[]; // 用户角色列表
+    permissions?: string[]; // 用户权限列表
   }
 }
 
@@ -23,6 +27,8 @@ declare module "next-auth/jwt" {
   interface JWT {
     id: string;
     email: string;
+    roles?: string[]; // 用户角色列表
+    permissions?: string[]; // 用户权限列表
   }
 }
 

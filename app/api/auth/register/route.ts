@@ -51,12 +51,30 @@ export async function POST(request: NextRequest) {
     // 加密密码
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 创建用户
+    // 查找默认角色（user角色）
+    const defaultRole = await prisma.role.findUnique({
+      where: { name: "user" },
+    });
+
+    if (!defaultRole) {
+      // 如果默认角色不存在，创建用户但不分配角色
+      // 这种情况应该不会发生，因为初始化脚本会创建默认角色
+      console.warn("默认角色 'user' 不存在，用户创建时未分配角色");
+    }
+
+    // 创建用户并分配默认角色
     const user = await prisma.user.create({
       data: {
         email,
         password: hashedPassword,
         name: name || null,
+        userRoles: defaultRole
+          ? {
+              create: {
+                roleId: defaultRole.id,
+              },
+            }
+          : undefined,
       },
       select: {
         id: true,

@@ -23,10 +23,25 @@ export const authConfig = {
           return null;
         }
 
-        // 查找用户
+        // 查找用户，同时获取角色和权限信息
         const user = await prisma.user.findUnique({
           where: {
             email: credentials.email as string,
+          },
+          include: {
+            userRoles: {
+              include: {
+                role: {
+                  include: {
+                    rolePermissions: {
+                      include: {
+                        permission: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         });
 
@@ -44,12 +59,23 @@ export const authConfig = {
           return null;
         }
 
-        // 返回用户信息（不包含密码）
+        // 提取用户角色和权限
+        const roles = user.userRoles.map((ur: { role: { name: string } }) => ur.role.name);
+        const permissions = new Set<string>();
+        user.userRoles.forEach((ur: { role: { rolePermissions: Array<{ permission: { code: string } }> } }) => {
+          ur.role.rolePermissions.forEach((rp: { permission: { code: string } }) => {
+            permissions.add(rp.permission.code);
+          });
+        });
+
+        // 返回用户信息（包含角色和权限）
         return {
           id: user.id,
           email: user.email,
           name: user.name,
           image: user.image,
+          roles: roles,
+          permissions: Array.from(permissions),
         };
       },
     }),
@@ -67,6 +93,8 @@ export const authConfig = {
       if (user) {
         token.id = user.id;
         token.email = user.email;
+        token.roles = user.roles;
+        token.permissions = user.permissions;
       }
       return token;
     },
@@ -74,6 +102,8 @@ export const authConfig = {
       if (session.user) {
         session.user.id = token.id as string;
         session.user.email = token.email as string;
+        session.user.roles = token.roles;
+        session.user.permissions = token.permissions;
       }
       return session;
     },

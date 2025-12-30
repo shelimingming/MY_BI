@@ -22,6 +22,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
+  userRoles     UserRole[] // 用户角色关联
 }
 
 // OAuth 账户模型（用于支持第三方登录）
@@ -60,4 +61,91 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+// RBAC权限管理模型
+
+// 角色模型
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique // 角色名称，如：admin, user, guest
+  displayName String   // 显示名称，如：管理员、普通用户、访客
+  description String?  // 角色描述
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userRoles   UserRole[] // 用户角色关联
+  rolePermissions RolePermission[] // 角色权限关联
+}
+
+// 权限模型
+model Permission {
+  id          String   @id @default(cuid())
+  code        String   @unique // 权限代码，如：user:read, user:write, admin:all
+  name        String   // 权限名称
+  description String?  // 权限描述
+  resource    String   // 资源类型，如：user, menu, dashboard
+  action      String   // 操作类型，如：read, write, delete, all
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  rolePermissions RolePermission[] // 角色权限关联
+  menuPermissions MenuPermission[] // 菜单权限关联
+}
+
+// 用户角色关联表（多对多）
+model UserRole {
+  id        String   @id @default(cuid())
+  userId    String
+  roleId    String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+  @@index([userId])
+  @@index([roleId])
+}
+
+// 角色权限关联表（多对多）
+model RolePermission {
+  id           String     @id @default(cuid())
+  roleId       String
+  permissionId String
+  createdAt    DateTime   @default(now())
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@index([roleId])
+  @@index([permissionId])
+}
+
+// 菜单模型
+model Menu {
+  id          String   @id @default(cuid())
+  code        String   @unique // 菜单代码，用于前端路由
+  name        String   // 菜单名称
+  path        String?  // 路由路径
+  icon        String?  // 图标名称
+  parentId    String?  // 父菜单ID，用于构建菜单树
+  order       Int      @default(0) // 排序
+  isVisible   Boolean  @default(true) // 是否可见
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  parent      Menu?    @relation("MenuTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children    Menu[]   @relation("MenuTree")
+  menuPermissions MenuPermission[] // 菜单权限关联
+}
+
+// 菜单权限关联表（多对多）
+model MenuPermission {
+  id           String     @id @default(cuid())
+  menuId       String
+  permissionId String
+  createdAt    DateTime   @default(now())
+  menu         Menu       @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([menuId, permissionId])
+  @@index([menuId])
+  @@index([permissionId])
 }
