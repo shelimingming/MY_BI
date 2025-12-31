@@ -252,3 +252,4 @@ hasAllPermissions(["user:read"], ["user:read", "user:write"]); // false
 4. **动态权限**：可以根据业务需求添加动态权限检查逻辑
 
 
+

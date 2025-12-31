@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers/session-provider";
-import { NavigationMenu } from "@/components/navigation-menu";
-import { AuthButton } from "@/components/auth-button";
+import { LayoutWrapper } from "@/components/layout-wrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,25 +30,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <div className="flex min-h-screen">
-            {/* 侧边栏导航菜单 */}
-            <aside className="fixed left-0 top-0 h-screen border-r border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-              <NavigationMenu />
-            </aside>
-
-            {/* 主内容区域 */}
-            <main className="flex-1 ml-64">
-              {/* 顶部导航栏 */}
-              <header className="sticky top-0 z-10 border-b border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-                <div className="flex h-16 items-center justify-end px-6">
-                  <AuthButton />
-                </div>
-              </header>
-
-              {/* 页面内容 */}
-              <div className="p-6">{children}</div>
-            </main>
-          </div>
+          <LayoutWrapper>{children}</LayoutWrapper>
         </Providers>
       </body>
     </html>

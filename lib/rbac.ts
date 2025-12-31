@@ -251,3 +251,21 @@ function checkMenuInTree(menus: MenuNode[], menuCode: string): boolean {
   return false;
 }
 
+/**
+ * 检查当前用户是否是管理员（服务端使用）
+ * @returns 是否是管理员
+ */
+export async function isAdmin(): Promise<boolean> {
+  const { roles } = await getUserRolesAndPermissions();
+  return hasRole(roles, "admin");
+}
+
+/**
+ * 检查用户是否是管理员（客户端使用）
+ * @param userRoles 用户角色列表
+ * @returns 是否是管理员
+ */
+export function isAdminRole(userRoles: string[] | undefined): boolean {
+  return hasRole(userRoles, "admin");
+}
+
