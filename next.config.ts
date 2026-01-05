@@ -25,17 +25,37 @@ const nextConfig: NextConfig = {
       "node_modules/typescript/**",
       "node_modules/eslint/**",
       "node_modules/prettier/**",
+      // 排除客户端库（只在客户端使用，不应在 SSR 中）
+      "node_modules/recharts/**",
+      "node_modules/framer-motion/**",
       // 排除测试相关
       "node_modules/**/*.test.*",
       "node_modules/**/*.spec.*",
       "node_modules/**/__tests__/**",
+      "node_modules/**/test/**",
+      "node_modules/**/tests/**",
       // 排除文档和示例
       "node_modules/**/README*",
       "node_modules/**/CHANGELOG*",
       "node_modules/**/LICENSE*",
       "node_modules/**/*.md",
+      "node_modules/**/docs/**",
+      "node_modules/**/examples/**",
+      "node_modules/**/example/**",
       // 排除源码映射（生产环境不需要）
       "node_modules/**/*.map",
+      // 排除大型依赖的额外文件
+      "node_modules/@radix-ui/**/README*",
+      "node_modules/@radix-ui/**/*.md",
+      "node_modules/lucide-react/dist/esm/icons/*.d.ts",
+      // 排除 Prisma 客户端的文档和脚本（运行时不需要）
+      "node_modules/@prisma/client/README*",
+      "node_modules/@prisma/client/*.md",
+      "node_modules/@prisma/client/scripts/**",
+      // 排除不必要的二进制文件
+      "node_modules/**/*.node",
+      "node_modules/**/*.dylib",
+      "node_modules/**/*.so",
     ],
   },
   // 明确包含 Prisma 客户端文件，确保运行时可用
