@@ -11,11 +11,15 @@ const nextConfig: NextConfig = {
       "node_modules/@next/swc-*",
       "node_modules/next/dist/compiled/@next/swc-*",
       "node_modules/webpack/**",
-      // 排除 Prisma 相关文件（运行时不需要）
-      "node_modules/prisma/**",
+      // 只排除 Prisma CLI 工具（开发时使用），但保留 @prisma/client 运行时文件
+      "node_modules/prisma/build/**",
+      "node_modules/prisma/migration-engine/**",
+      "node_modules/prisma/introspection-engine/**",
+      "node_modules/prisma/format-engine/**",
+      // 排除 Prisma 查询引擎的二进制文件（使用二进制文件优化）
+      // 注意：不要排除 .prisma/client 目录，因为运行时需要它
       "node_modules/.prisma/client/libquery_engine-*",
       "node_modules/.prisma/client/query_engine-*",
-      "node_modules/.prisma/client/schema.prisma",
       // 排除开发依赖
       "node_modules/@types/**",
       "node_modules/typescript/**",

@@ -3,6 +3,8 @@
 
 generator client {
   provider = "prisma-client-js"
+  // 优化：只生成必要的文件，减少包大小
+  binaryTargets = ["native"]
 }
 
 datasource db {
