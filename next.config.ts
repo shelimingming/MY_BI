@@ -38,6 +38,13 @@ const nextConfig: NextConfig = {
       "node_modules/**/*.map",
     ],
   },
+  // 明确包含 Prisma 客户端文件，确保运行时可用
+  outputFileTracingIncludes: {
+    "/api/**": [
+      "node_modules/.prisma/client/**",
+      "node_modules/@prisma/client/**",
+    ],
+  },
 };
 
 export default nextConfig;
