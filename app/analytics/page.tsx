@@ -23,7 +23,7 @@ import {
 interface RegionSalesData {
   name: string;
   value: number;
-  [key: string]: string | number; // 添加索引签名以兼容 recharts 的 ChartDataInput 类型
+  [key: string]: unknown; // 添加索引签名以兼容 recharts 的 ChartDataInput 类型 (Record<string, unknown>)
 }
 
 /**

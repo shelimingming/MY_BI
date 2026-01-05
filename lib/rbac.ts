@@ -178,11 +178,18 @@ interface MenuNode {
 }
 
 /**
+ * 菜单项输入类型（用于构建树之前，children 可选）
+ */
+type MenuNodeInput = Omit<MenuNode, 'children'> & {
+  children?: MenuNode[];
+};
+
+/**
  * 构建菜单树结构
  * @param menus 扁平菜单列表
  * @returns 树形菜单结构
  */
-function buildMenuTree(menus: MenuNode[]): MenuNode[] {
+function buildMenuTree(menus: MenuNodeInput[]): MenuNode[] {
   const menuMap = new Map<string, MenuNode>();
   const rootMenus: MenuNode[] = [];
 
