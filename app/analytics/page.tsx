@@ -23,6 +23,7 @@ import {
 interface RegionSalesData {
   name: string;
   value: number;
+  [key: string]: string | number; // 添加索引签名以兼容 recharts 的 ChartDataInput 类型
 }
 
 /**
@@ -132,7 +133,8 @@ export default function AnalyticsPage() {
   }, []);
 
   // 自定义 Tooltip 格式化函数
-  const formatCurrency = (value: number) => {
+  const formatCurrency = (value: number | undefined) => {
+    if (value === undefined || value === null) return "¥0.00";
     return `¥${value.toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
@@ -210,7 +212,7 @@ export default function AnalyticsPage() {
                   cy="50%"
                   labelLine={false}
                   label={({ name, percent }) =>
-                    `${name}: ${(percent * 100).toFixed(1)}%`
+                    `${name}: ${((percent ?? 0) * 100).toFixed(1)}%`
                   }
                   outerRadius={120}
                   fill="#8884d8"
@@ -247,7 +249,8 @@ export default function AnalyticsPage() {
                 <YAxis yAxisId="left" />
                 <YAxis yAxisId="right" orientation="right" />
                 <Tooltip
-                  formatter={(value: number, name: string) => {
+                  formatter={(value: number | undefined, name: string | undefined) => {
+                    if (value === undefined || value === null) return "0";
                     if (name === "毛利率 (%)") {
                       return formatPercent(value);
                     }
